@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-const Display = (props) => {
+const Statistics = (props) => {
   const percentage = props.total !==0 ? ((props.good / props.total) * 100) : 0;
   const average = props.total !==0 ? (props.good-props.bad)/props.total : 0;
   return (
@@ -49,7 +49,7 @@ const App = () => {
       <Button handleClick={handleNeutralClick} text="neutral" />
       <Button handleClick={handleBadClick} text="bad" />
       <Heading text = "statistics" />
-      <Display good={good} bad={bad} neutral={neutral} total = {good + neutral + bad}/>
+      <Statistics good={good} bad={bad} neutral={neutral} total = {good + neutral + bad}/>
     </div>
   )
 }
