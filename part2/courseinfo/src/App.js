@@ -11,10 +11,14 @@ const App = () => {
   }
 
   const Total = ({parts}) => {
+    const total = parts.reduce((s, p) => {
+      console.log('what is happening', s, p)
+      return s + p.exercises 
+    },0)
+    console.log('Total',total);
+    
     return (
-      <p> <strong>total of {parts.reduce(function(sum, order) {
-          return sum + order.exercises
-        },0)} exercises
+      <p> <strong>total of {total} exercises
       </strong></p>
   )
   }
