@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import './App.css';
+
 const StatisticLine = (props) => {
   return (
-    <p>{props.text} {props.value}</p>
+    <tr>
+    <td>{props.text} </td>
+    <td>{props.value}</td>
+    </tr>
   )
 }
+
 const Statistics = (props) => {
   const positive = props.total !==0 ? ((props.good / props.total) * 100) : 0;
   const average = props.total !==0 ? (props.good-props.bad)/props.total : 0;
@@ -17,14 +22,16 @@ const Statistics = (props) => {
     )
   }
   return (
-    <div>
+    <table>
+      <tbody>
       <StatisticLine text="good" value ={props.good} />
       <StatisticLine text="neutral" value ={props.neutral} />
       <StatisticLine text="bad" value ={props.bad} />
       <StatisticLine text="all" value ={props.total} />
       <StatisticLine text="average" value ={average} />
       <StatisticLine text="positive" value ={positiveWithPercentageStr} />
-    </div>
+      </tbody>
+    </table>
   )
 }
 
