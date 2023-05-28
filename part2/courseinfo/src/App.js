@@ -1,28 +1,30 @@
+import React from 'react';
+
 const App = () => {
 
   const Header = (props) => {
     return <h1>{props.coursename}</h1>
   }
 
-  const Part = (props) => {
-    return <p>{props.partname} {props.partexercise}</p>
+  const Part = ({part}) => {
+    return <p>{part.name} {part.exercises}</p>
   }
 
-  const Content = (props) => {
+  const Content = ({parts}) => {
     return (
       <>
-        <Part partname={props.parts[0].name} partexercise={props.parts[0].exercises} />
-        <Part partname={props.parts[1].name} partexercise={props.parts[1].exercises} />
-        <Part partname={props.parts[2].name} partexercise={props.parts[2].exercises} />
+        {parts.map((part) => (
+          <Part key = {part.id} part = {part} />
+        ))}
       </>
   )
   }
 
-  const Course = (props) => {
+  const Course = ({course}) => {
     return (
       <div>
-        <Header coursename={props.course.name} />
-        <Content parts={props.course.parts} />
+        <Header coursename={course.name} />
+        <Content parts={course.parts} />
       </div>
     )
   }
