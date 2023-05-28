@@ -10,6 +10,15 @@ const App = () => {
     return <p>{part.name} {part.exercises}</p>
   }
 
+  const Total = ({parts}) => {
+    return (
+      <p> <strong>total of {parts.reduce(function(sum, order) {
+          return sum + order.exercises
+        },0)} exercises
+      </strong></p>
+  )
+  }
+
   const Content = ({parts}) => {
     return (
       <>
@@ -25,6 +34,7 @@ const App = () => {
       <div>
         <Header coursename={course.name} />
         <Content parts={course.parts} />
+        <Total parts={course.parts} />
       </div>
     )
   }
