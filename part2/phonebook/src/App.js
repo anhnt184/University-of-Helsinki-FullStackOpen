@@ -3,11 +3,14 @@ import Person from './components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Anh',
-      number: '0414702'  }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [searchKeyword, setSearchKeyword] = useState('')
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -15,6 +18,9 @@ const App = () => {
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
+  }
+  const handleSearchInputChange = (event) => {
+    setSearchKeyword(event.target.value)
   }
 
   const addName = (event) => {
@@ -28,7 +34,8 @@ const App = () => {
     } else {
       const nameObject = {
         name: newName,
-        number: newNumber
+        number: newNumber,
+        id: persons.length+1
       }
       setPersons(persons.concat(nameObject))
       setNewName('')
@@ -37,9 +44,17 @@ const App = () => {
     
   }
 
+  const filteredPersons = persons.filter((person) => 
+  person.name.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Phonebook</h2>
+        <div>
+          name: <input value = {searchKeyword} onChange={handleSearchInputChange}/>
+        </div>
+      <h2>add a new</h2>
       <form onSubmit = {addName}>
         <div>
           name: <input value = {newName} onChange={handleNameChange}/>
@@ -51,7 +66,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-          {persons.map((person, index) =>
+          {filteredPersons.map((person, index) =>
           <Person key = {index} person = {person}/>
           )}
       </div>
