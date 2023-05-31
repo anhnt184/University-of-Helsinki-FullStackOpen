@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Persons, PersonForm } from './components/Persons'
 import Filter from './components/Filter'
 
-import personService from './services/Personservices'
+import personService from './services/PersonServices'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -67,7 +67,10 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm  addName = {addName} newName = {newName} newNumber = {newNumber} handleNameChange = {handleNameChange} handleNumberChange = {handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons filteredPersons = {filteredPersons}/>
+      <Persons
+        filteredPersons = {filteredPersons}
+        setPersons={setPersons}
+        persons={persons}/>
       </div>
   )
 }
