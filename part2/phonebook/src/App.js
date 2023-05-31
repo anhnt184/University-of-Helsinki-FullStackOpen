@@ -24,10 +24,18 @@ const App = () => {
     event.preventDefault()
     //Check if name already exists in phonebook
     const nameExist = persons.some((person) => person.name === newName)
-    const strAlert = `${newName} is already added to phonebook`
+    const strAlert = `${newName} is already added to phonebook, replace the old number with a new one?`
 
     if (nameExist) {
-      alert(strAlert);
+      if (window.confirm(strAlert)) {
+        const nameOfPerson = persons.find(n => n.name === newName)
+        const changedPerson = { ...nameOfPerson, number: newNumber }
+        personService
+        .update(nameOfPerson.id, changedPerson)
+      .then(returnedPerson => {
+        setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+      })
+      }
     } else {
       const nameObject = {
         name: newName,
