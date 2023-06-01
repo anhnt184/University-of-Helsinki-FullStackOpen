@@ -42,13 +42,13 @@ const Persons = ({ filteredPersons, setPersons, persons, notificationMessage,set
     )
   }
 
-  const Notification = ({ message }) => {
+  const Notification = ({ message, notificationType }) => {
     if (message === null) {
       return null
     }
   
     return (
-      <div className='notification'>
+      <div className={notificationType}>
         {message}
       </div>
     )

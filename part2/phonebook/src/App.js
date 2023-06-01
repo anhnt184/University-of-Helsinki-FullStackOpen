@@ -10,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchKeyword, setSearchKeyword] = useState('')
+  const [notificationType, setNotificationType] = useState('')
 
   const [notificationMessage, setNotificationMessage] = useState(null)
 
@@ -21,6 +22,12 @@ const App = () => {
       })
     
       },[])
+
+      const updatePersons = () => {
+        personService.getAll().then((updatedPersons) => {
+          setPersons(updatedPersons);
+        });
+      };
   
   const addName = (event) => {
     event.preventDefault()
@@ -38,12 +45,24 @@ const App = () => {
         setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
         setNewName('')
         setNewNumber('')
+        setNotificationType('notification')
         setNotificationMessage(
           `${changedPerson.name} number is changed` 
         )
         setTimeout(() => {
           setNotificationMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        setNotificationType('error')
+        setNotificationMessage(`Information of ${newName} has already been removed from server`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+          updatePersons()
+          setNewName('')
+          setNewNumber('')
+        }, 5000)
+        
       })
       }
     } else {
@@ -55,6 +74,7 @@ const App = () => {
       .create(nameObject)
       .then(returnPerson => {
         setPersons(persons.concat(returnPerson))
+        setNotificationType('notification')
         setNotificationMessage(
           `Added ${nameObject.name}`
         )
@@ -87,7 +107,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} notificationType={notificationType} />
       <Filter searchKeyword = {searchKeyword} handleSearchInputChange = {handleSearchInputChange} />
       <h3>Add a new</h3>
       <PersonForm  addName = {addName} newName = {newName} newNumber = {newNumber} handleNameChange = {handleNameChange} handleNumberChange = {handleNumberChange} />
