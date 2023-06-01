@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Persons, PersonForm } from './components/Persons'
+import { Persons, PersonForm, Notification } from './components/Persons'
 import Filter from './components/Filter'
 
 import personService from './services/PersonServices'
@@ -10,6 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchKeyword, setSearchKeyword] = useState('')
+
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -34,6 +36,14 @@ const App = () => {
         .update(nameOfPerson.id, changedPerson)
       .then(returnedPerson => {
         setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+        setNewName('')
+        setNewNumber('')
+        setNotificationMessage(
+          `${changedPerson.name} number is changed` 
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       })
       }
     } else {
@@ -45,6 +55,12 @@ const App = () => {
       .create(nameObject)
       .then(returnPerson => {
         setPersons(persons.concat(returnPerson))
+        setNotificationMessage(
+          `Added ${nameObject.name}`
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
         setNewName('')
         setNewNumber('')
       })
@@ -71,6 +87,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter searchKeyword = {searchKeyword} handleSearchInputChange = {handleSearchInputChange} />
       <h3>Add a new</h3>
       <PersonForm  addName = {addName} newName = {newName} newNumber = {newNumber} handleNameChange = {handleNameChange} handleNumberChange = {handleNumberChange} />
@@ -78,7 +95,9 @@ const App = () => {
       <Persons
         filteredPersons = {filteredPersons}
         setPersons={setPersons}
-        persons={persons}/>
+        persons={persons}
+        setNotificationMessage = {setNotificationMessage}
+        notificationMessage = {notificationMessage} />
       </div>
   )
 }

@@ -1,11 +1,17 @@
 import React from 'react';
 import personService from '../services/PersonServices';
 
-const Persons = ({ filteredPersons, setPersons, persons}) => {
+const Persons = ({ filteredPersons, setPersons, persons, notificationMessage,setNotificationMessage}) => {
   const deletePerson = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       personService.remove(id).then(() => {
         setPersons(persons.filter((person) => person.id !== id));
+        setNotificationMessage(
+          `Deleted ${name}` 
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       });
     }
   };
@@ -35,5 +41,17 @@ const Persons = ({ filteredPersons, setPersons, persons}) => {
         </>
     )
   }
+
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
   
-  export { Persons, PersonForm };
+    return (
+      <div className='notification'>
+        {message}
+      </div>
+    )
+  }
+  
+  export { Persons, PersonForm, Notification };

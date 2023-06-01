@@ -1,0 +1,10 @@
+  .notification {
+    color: rgb(77, 133, 95);
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
