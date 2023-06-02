@@ -7,6 +7,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [countries, setCountries] = useState([]);
   const [error, setError] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     countryService
@@ -25,6 +26,14 @@ const App = () => {
   country.name.common.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleButtonClick = (countryCode) => {
+    setShowDetails(prevState => ({
+      ...prevState,
+      [countryCode]: !prevState[countryCode]
+    }));
+    console.log('first', showDetails)
+  };
+
   return (
     
     <div>
@@ -38,12 +47,19 @@ const App = () => {
         filteredCountries.length === 1 ? (
           <CountryDetails country={filteredCountries[0]} />
         ) : filteredCountries.length <= 10 ? (
+          
           <ul>
             {filteredCountries.map((country) => (
-              <li key={country.cca3}>{country.name.common}</li>
+              <li key={country.cca3}>{country.name.common}
+              <button onClick={() => handleButtonClick(country.cca3)}>
+                {showDetails[country.cca3] ? 'Hide Details' : 'Show Details'}
+              </button>
+              {showDetails[country.cca3] && <CountryDetails country={country} />}
+              </li>
             ))}
           </ul>
-        ) : (
+          
+          ) : (
           <p>Too many matches, specify another filter.</p>
         )
       )}
