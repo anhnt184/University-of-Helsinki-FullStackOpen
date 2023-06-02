@@ -12,18 +12,18 @@ const App = () => {
   useEffect(() => {
     countryService
       .getAll()
-      .then(initialPersons => {
-        setCountries(initialPersons)
+      .then(initialCountries => {
+        setCountries(initialCountries)
       })
-    
-      },[])
+
+  }, [])
 
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredCountries = countries.filter((country) => 
-  country.name.common.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCountries = countries.filter((country) =>
+    country.name.common.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleButtonClick = (countryCode) => {
@@ -31,11 +31,10 @@ const App = () => {
       ...prevState,
       [countryCode]: !prevState[countryCode]
     }));
-    console.log('first', showDetails)
   };
 
   return (
-    
+
     <div>
       <CountrySearch
         searchQuery={searchQuery}
@@ -47,19 +46,19 @@ const App = () => {
         filteredCountries.length === 1 ? (
           <CountryDetails country={filteredCountries[0]} />
         ) : filteredCountries.length <= 10 ? (
-          
+
           <ul>
             {filteredCountries.map((country) => (
               <li key={country.cca3}>{country.name.common}
-              <button onClick={() => handleButtonClick(country.cca3)}>
-                {showDetails[country.cca3] ? 'Hide Details' : 'Show Details'}
-              </button>
-              {showDetails[country.cca3] && <CountryDetails country={country} />}
+                <button onClick={() => handleButtonClick(country.cca3)}>
+                  {showDetails[country.cca3] ? 'Hide Details' : 'Show Details'}
+                </button>
+                {showDetails[country.cca3] && <CountryDetails country={country} />}
               </li>
             ))}
           </ul>
-          
-          ) : (
+
+        ) : (
           <p>Too many matches, specify another filter.</p>
         )
       )}
