@@ -1,0 +1,25 @@
+# flyctl launch added from norsnotes\.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+norsnotes\node_modules
+norsnotes\.pnp
+norsnotes\**\.pnp.js
+
+# testing
+norsnotes\coverage
+
+# production
+norsnotes\build
+
+# misc
+norsnotes\**\.DS_Store
+norsnotes\**\.env.local
+norsnotes\**\.env.development.local
+norsnotes\**\.env.test.local
+norsnotes\**\.env.production.local
+
+norsnotes\**\npm-debug.log*
+norsnotes\**\yarn-debug.log*
+norsnotes\**\yarn-error.log*
+fly.toml

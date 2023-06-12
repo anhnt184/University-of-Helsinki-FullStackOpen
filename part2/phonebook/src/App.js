@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState, useEffect, useMemo } from 'react'
 import { Persons, PersonForm, Notification } from './components/Persons'
 import Filter from './components/Filter'
-
 import personService from './services/PersonServices'
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchKeyword, setSearchKeyword] = useState('')
@@ -15,20 +13,19 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
-    personService
-      .getAll()
-      .then(initialPersons => {
+    // Fetch initial persons from the server
+    personService.getAll().then(initialPersons => {
         setPersons(initialPersons)
       })
-    
-      },[])
+  }, [])
 
-      const updatePersons = () => {
-        personService.getAll().then((updatedPersons) => {
-          setPersons(updatedPersons);
-        });
-      };
-  
+  const updatePersons = () => {
+    // Fetch updated persons from the server
+    personService.getAll().then((updatedPersons) => {
+      setPersons(updatedPersons);
+    });
+  };
+
   const addName = (event) => {
     event.preventDefault()
     //Check if name already exists in phonebook
@@ -37,56 +34,68 @@ const App = () => {
 
     if (nameExist) {
       if (window.confirm(strAlert)) {
-        const nameOfPerson = persons.find(n => n.name === newName)
+        const nameOfPerson = persons.find((person) => person.name === newName)
         const changedPerson = { ...nameOfPerson, number: newNumber }
         personService
-        .update(nameOfPerson.id, changedPerson)
-      .then(returnedPerson => {
-        setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        setNotificationType('notification')
-        setNotificationMessage(
-          `${changedPerson.name} number is changed` 
-        )
-        setTimeout(() => {
-          setNotificationMessage(null)
-        }, 5000)
-      })
-      .catch(error => {
-        setNotificationType('error')
-        setNotificationMessage(`Information of ${newName} has already been removed from server`)
-        setTimeout(() => {
-          setNotificationMessage(null)
-          updatePersons()
-          setNewName('')
-          setNewNumber('')
-        }, 5000)
-        
-      })
+          .update(nameOfPerson.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(prevPersons =>
+              prevPersons.map(person =>
+                person.id !== changedPerson.id ? person : changedPerson
+              )
+            )
+            updatePersons()
+            setNewName('')
+            setNewNumber('')
+            setNotificationType('notification')
+            setNotificationMessage(
+              `${changedPerson.name} number is changed`
+            )
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setNotificationType('error')
+            setNotificationMessage(error.response.data.error)
+            setTimeout(() => {
+              setNotificationMessage(null)
+              updatePersons()
+              setNewName('')
+              setNewNumber('')
+            }, 5000)
+          })
       }
     } else {
       const nameObject = {
         name: newName,
         number: newNumber,
+      }
+      personService
+        .create(nameObject)
+        .then(returnPerson => {
+          updatePersons()
+          setNotificationType('notification')
+          setNotificationMessage(
+            `Added ${nameObject.name}`
+          )
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => {
+          setNotificationType('error')
+          setNotificationMessage(error.response.data.error)
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setNewName('')
+            setNewNumber('')
+          }, 5000)
+
+        })
     }
-    personService
-      .create(nameObject)
-      .then(returnPerson => {
-        setPersons(persons.concat(returnPerson))
-        setNotificationType('notification')
-        setNotificationMessage(
-          `Added ${nameObject.name}`
-        )
-        setTimeout(() => {
-          setNotificationMessage(null)
-        }, 5000)
-        setNewName('')
-        setNewNumber('')
-      })
-      
-    }
-    
   }
 
   const handleNameChange = (event) => {
@@ -100,25 +109,30 @@ const App = () => {
     setSearchKeyword(event.target.value)
   }
 
-  const filteredPersons = persons.filter((person) => 
-  person.name.toLowerCase().includes(searchKeyword.toLowerCase())
-  );
+  const filteredPersons = useMemo(() => {
+    return persons.filter((person) => {
+      return person.name.toLowerCase().includes(searchKeyword.toLowerCase())
+    }
+    )
+  }, [persons, searchKeyword])
 
   return (
     <div>
       <h2>Phonebook</h2>
       <Notification message={notificationMessage} notificationType={notificationType} />
-      <Filter searchKeyword = {searchKeyword} handleSearchInputChange = {handleSearchInputChange} />
+      <Filter searchKeyword={searchKeyword} handleSearchInputChange={handleSearchInputChange} />
       <h3>Add a new</h3>
-      <PersonForm  addName = {addName} newName = {newName} newNumber = {newNumber} handleNameChange = {handleNameChange} handleNumberChange = {handleNumberChange} />
+      <PersonForm addName={addName} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
       <Persons
-        filteredPersons = {filteredPersons}
+        filteredPersons={filteredPersons}
         setPersons={setPersons}
         persons={persons}
-        setNotificationMessage = {setNotificationMessage}
-        notificationMessage = {notificationMessage} />
-      </div>
+        setNotificationMessage={setNotificationMessage}
+        notificationMessage={notificationMessage}
+        setNotificationType={setNotificationType}
+        notificationType={notificationType} />
+    </div>
   )
 }
 

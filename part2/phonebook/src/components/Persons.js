@@ -1,7 +1,7 @@
 import React from 'react';
 import personService from '../services/PersonServices';
 
-const Persons = ({ filteredPersons, setPersons, persons, notificationMessage,setNotificationMessage}) => {
+const Persons = ({ filteredPersons, setPersons, persons, notificationMessage,setNotificationMessage, setNotificationType, notificationType}) => {
   const deletePerson = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       personService.remove(id).then(() => {
@@ -9,8 +9,12 @@ const Persons = ({ filteredPersons, setPersons, persons, notificationMessage,set
         setNotificationMessage(
           `Deleted ${name}` 
         )
+        setNotificationType(
+          `notification` 
+        )
         setTimeout(() => {
           setNotificationMessage(null)
+          setNotificationType(null)
         }, 5000)
       });
     }
