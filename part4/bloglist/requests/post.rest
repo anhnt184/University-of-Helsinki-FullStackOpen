@@ -1,0 +1,21 @@
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: text/plain
+[
+  {
+    "title": "My First Blog Post 2",
+    "author": "John Smith",
+    "url": "https://example.com/my-first-blog-post",
+    "likes": 5,
+}
+]
+
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+  "title": "My First Blog Post 32",
+  "author": "Tuan Anh",
+  "url": "https://example.com/my-first-blog-post32",
+  "likes": 6
+}
