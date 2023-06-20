@@ -14,8 +14,7 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-  "title": "My First Blog Post 32",
+  "title": "My First Blog Post 328888",
   "author": "Tuan Anh",
-  "url": "https://example.com/my-first-blog-post32",
-  "likes": 6
+  "url": "https://example.com/my-first-blog-post32"
 }
