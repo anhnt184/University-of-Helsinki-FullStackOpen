@@ -1,26 +1,52 @@
 const blogRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog
+    .find({}).populate('user', { username: 1, name: 1 })
+
   response.json(blogs)
 })
 
-blogRouter.post('/', (request, response) => {
-  const { title, author, url, likes } = request.body
 
+blogRouter.post('/', async (request, response) => {
+  const { title, author, url, likes, userId } = request.body
+
+  let user
+
+  if (!userId) {
+    const totalUsers = await User.countDocuments()
+    const randomIndex = Math.floor(Math.random() * totalUsers)
+    const randomUser = await User.findOne().skip(randomIndex)
+    console.log('randomUser> ', randomUser)
+    user = randomUser
+    console.log('user ', user)
+  } else {
+    user = await User.findById(userId)
+    console.log('user ', user)
+  }
+ 
   if (!title || !url) {
     return response.status(400).json({ error: 'Title and URL are required' })
   }
   
+
   const blog = new Blog({
     title,
     author,
     url,
-    likes: likes ? likes : 0 // Set likes to 0 if it is missing
+    likes: likes ? likes : 0, // Set likes to 0 if it is missing
+    user: user.id
   })
 
-  const savedBlog = blog.save()
+  const savedBlog = await blog.save()
+  console.log('savedBlog> ', savedBlog)
+  user.blogs = user.blogs.concat(savedBlog._id)
+  console.log('user.blogs: ', user.blogs)
+  await user.save()
+
   response.status(201).json(savedBlog)
 })
 
