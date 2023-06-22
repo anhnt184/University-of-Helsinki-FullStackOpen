@@ -3,6 +3,14 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({}).populate('user', { username: 1, name: 1 })
@@ -14,19 +22,26 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes, userId } = request.body
 
-  let user
+  // let user
 
-  if (!userId) {
-    const totalUsers = await User.countDocuments()
-    const randomIndex = Math.floor(Math.random() * totalUsers)
-    const randomUser = await User.findOne().skip(randomIndex)
-    console.log('randomUser> ', randomUser)
-    user = randomUser
-    console.log('user ', user)
-  } else {
-    user = await User.findById(userId)
-    console.log('user ', user)
+  // if (!userId) {
+  //   const totalUsers = await User.countDocuments()
+  //   const randomIndex = Math.floor(Math.random() * totalUsers)
+  //   const randomUser = await User.findOne().skip(randomIndex)
+  //   console.log('randomUser> ', randomUser)
+  //   user = randomUser
+  //   console.log('user ', user)
+  // } else {
+  //   user = await User.findById(userId)
+  //   console.log('user ', user)
+  // }
+
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
   }
+  const user = await User.findById(decodedToken.id)
+
  
   if (!title || !url) {
     return response.status(400).json({ error: 'Title and URL are required' })
