@@ -5,9 +5,6 @@ const User = require('../models/user')
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
-  console.log('{ username, name, password }; ', { username, name, password })
-  
-
   if (!username || !password) {
     return response.status(400).json({ error: 'Both username and password are required' })
   }

@@ -9,14 +9,38 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const helper = require('./test_helper')
 
+let authToken
+
 beforeEach(async () => {
   await Blog.deleteMany({})
-  
-  for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog)
-    await blogObject.save()
+  await User.deleteMany({})
+
+  const newUser = {
+    username: 'testuser',
+    name: 'Test User',
+    password: 'testpassword',
   }
+
+  await api.post('/api/users').send(newUser)
+
+  const userResponse = await api.post('/api/login').send(newUser)
+  authToken = userResponse.body.token
+   
+  const user = userResponse.body
+  const blogsWithUser = helper.initialBlogs.map((blog) => ({
+    ...blog,
+    user: user.id,
+  }))
+
+  const savePromises = blogsWithUser.map((blog) => {
+    const blogObject = new Blog(blog)
+    return blogObject.save()
+  })
+  
+  await Promise.all(savePromises)
+
 })
+
 describe('Add blog:', () => {
   test('the blog list are returned the correct amount of blog posts in the JSON format', async () => {
     const res = await api.get('/api/blogs')
@@ -30,7 +54,7 @@ describe('Add blog:', () => {
 
   test('a valid blog can be added ', async () => {
     const newBlog = {
-      title: 'New blog for added',
+      title: 'New blog test for added',
       author: 'Anthony Nguyen',
       url: 'https://anthony.com/',
       likes: 3
@@ -38,19 +62,19 @@ describe('Add blog:', () => {
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    //   console.log('Response:', response.body)
-  
+     
     const blogsAtEnd = await helper.blogsInDb()
     //   console.log('blogsAtEnd:', blogsAtEnd)
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
      
     const title = blogsAtEnd.map(b => b.title)
     expect(title).toContain(
-      'New blog for added'
+      'New blog test for added'
     )
   })
 
@@ -64,6 +88,7 @@ describe('Add blog:', () => {
       
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -84,6 +109,7 @@ describe('Add blog:', () => {
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(400)
   })
@@ -114,9 +140,9 @@ describe('Delete and update blog:', () => {
   test('deleting a blog post succeeds with status code 204', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
-  
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${authToken}`)
       .expect(204)
   
     const blogsAtEnd = await helper.blogsInDb()
@@ -130,9 +156,10 @@ describe('Delete and update blog:', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
     const updatedLikes = blogToUpdate.likes + 1
-  
+
     const response = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${authToken}`)
       .send({ likes: updatedLikes })
       .expect(200)
   
@@ -193,12 +220,30 @@ describe('when there is initially one user in db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(result.body.error).toContain('expected `username` to be unique')
+    expect(result.body.error).toContain('Username must be unique')
 
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toEqual(usersAtStart)
   })
+
+  test('fails with status code 401 Unauthorized if token is not provided', async () => {
+    const newBlog = {
+      title: 'Test Blog',
+      author: 'Test Author',
+      url: 'https://testblog.com',
+      likes: 10,
+    }
+    const response = await api.post('/api/blogs').send(newBlog)
+
+    expect(response.status).toBe(401)
+    expect(response.body.error).toBe('Unauthorized')
+    expect(response.headers['content-type']).toMatch(/application\/json/)
   
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+  
+
 })
 
 

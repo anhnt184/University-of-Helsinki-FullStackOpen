@@ -23,13 +23,13 @@ content-type: application/json
 ###
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtoYW5odnkiLCJpZCI6IjY0OTNiNTNiZTYyZDM0N2EyYWU1MTc4MiIsImlhdCI6MTY4NzQxMzQwMn0.lIuZHftNCEUMhT8avA_8ay7LHH3o6VbmUzbo-nPJz5c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtoYW5oIiwiaWQiOiI2NDkzYjU3ZmU2MmQzNDdhMmFlNTE3OGMiLCJpYXQiOjE2ODc0NTA4OTV9.asllYs0cp81BHeCrMgWMEm4DKv8HTqJ-Wlx3u0ZBJ5A
 
 {
-  "title": "Blog Post 1 from Token Bearer",
-  "author": "Bearer User",
-  "url": "https://example.com/Bearer",
-  "likes": 8
+  "title": "Quoc Khanh 222",
+  "author": "Quoc Khanh",
+  "url": "https://example.com/quockhanh2",
+  "likes": 6
  }
 
  

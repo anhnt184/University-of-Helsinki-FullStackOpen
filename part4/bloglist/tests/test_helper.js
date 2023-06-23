@@ -6,19 +6,19 @@ const initialBlogs = [
     title: 'Blog number 1',
     author: 'Tuan Anh Nguyen',
     url: 'https://tuananh.com/',
-    likes: 99
+    likes: 1
   },
   {
     title: 'Blog number 2',
     author: 'Quoc Khanh Nguyen',
     url: 'https://quockhanh.com/',
-    likes: 66
+    likes: 2
   },
   {
     title: 'Blog number 3',
     author: 'Trung Kien Nguyen, Khanh Vy Nguyen',
     url: 'https://trungkienkhanhvy.com/',
-    likes: 99
+    likes: 3
   }
 ]
 

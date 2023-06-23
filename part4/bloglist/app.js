@@ -10,6 +10,9 @@ const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 
 const middleware = require('./utils/middleware')
+
+const userExtractor = require('./utils/userExtractor')
+
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
@@ -28,6 +31,9 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(middleware.requestLogger)
+
+app.use(middleware.tokenExtractor)
+app.use('/api/blogs', userExtractor, blogRouter)
 
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', usersRouter)
