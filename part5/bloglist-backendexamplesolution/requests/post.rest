@@ -1,0 +1,35 @@
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "My Second Blog Post from Tuan Anh",
+  "author": "Anh",
+  "url": "https://example.com/anh",
+  "likes": 9,
+  "userId": "6493b464e62d347a2ae5177c"
+}
+
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Blog Post 3 from Random User",
+  "author": "Random User",
+  "url": "https://example.com/random3",
+  "likes": 8
+ }
+
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtpZW4iLCJpZCI6IjY0OTdiOWU4MTY2YWNlM2YwZDhlODBlOSIsImlhdCI6MTY4NzY2NTQ0NH0.x6h8mpy9O6VyAcL2sX9dGfhfR84eUMRTq471jk7Wd70
+
+{
+  "title": "Trung Kien Post 3",
+  "author": "Trung Kien",
+  "url": "https://example.com/trungkien3",
+  "likes": 6
+ }
+
+ 
