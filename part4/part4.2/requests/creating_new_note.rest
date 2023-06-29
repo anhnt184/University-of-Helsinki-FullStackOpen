@@ -1,8 +1,8 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZ5IiwiaWQiOiI2NDkyNjlkMDkxZGIyN2UzYzk1ZjY3YjkiLCJpYXQiOjE2ODczMzQzMzh9.MmxZzK7eyjgC6bkPKZ2WhqdEWezzBWCnH83Rl_XisZw
 
 {
-  "content": "Add 2nd note with user Anh",
-  "important": false,
-  "userId": "649269c191db27e3c95f67b5"
+  "content": "Add second note with user Vy and bearer",
+  "important": false
 }
