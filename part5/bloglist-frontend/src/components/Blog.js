@@ -1,30 +1,23 @@
-import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlogs, user, showNotification }) => {
+
+const Blog = ({ blog, user, showNotification, handleLike, handleDelete  }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const toggleDetails = () => {
     setShowDetails(!showDetails)
   }
 
-  const handleLike = async () => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    await blogService.update(blog.id, updatedBlog)
-    updateBlogs()
+  const handleLikeClick = async () => {
+    try {
+      await handleLike(blog)
+    } catch (error) {
+      showNotification('Failed to update blog', 'error')
+    }
   }
 
-  const handleDelete = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.remove(blog.id)
-      updateBlogs()
-      showNotification(
-        `Blog ${blog.title} deleted successfully`,
-        'success',
-      )
-
-    }
+  const handleDeleteClick = async () => {
+    handleDelete(blog.id, blog.title, blog.author)
   }
 
   const blogStyle = {
@@ -50,7 +43,7 @@ const Blog = ({ blog, updateBlogs, user, showNotification }) => {
 
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       <div>
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>
@@ -62,7 +55,7 @@ const Blog = ({ blog, updateBlogs, user, showNotification }) => {
           {blog.url}
           <br />
           likes {blog.likes}
-          <button onClick={handleLike}>like</button>
+          <button onClick={handleLikeClick}>like</button>
           <br />
           {blog.author}
           <br />
@@ -70,20 +63,13 @@ const Blog = ({ blog, updateBlogs, user, showNotification }) => {
           <br />
           {blog.user.username === user.username && (
             <div style={deleteWrapperStyle}>
-              <button style={deleteButtonStyle} onClick={handleDelete}>delete</button>
+              <button style={deleteButtonStyle} onClick={handleDeleteClick}>delete</button>
             </div>
           )}
         </div>
       )}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlogs: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
-  showNotification: PropTypes.func.isRequired
 }
 
 export default Blog

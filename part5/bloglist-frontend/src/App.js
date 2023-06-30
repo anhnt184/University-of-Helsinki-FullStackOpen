@@ -94,6 +94,27 @@ function App() {
     }
   }
 
+  const handleLike = async (blog) => {
+    try {
+      const updatedBlog = { ...blog, likes: blog.likes + 1 }
+      await blogService.update(blog.id, updatedBlog)
+      updateBlogs()
+    } catch (error) {
+      showNotification('Failed to update blog', 'error')
+    }
+  }
+
+  const handleDelete = async (blogId, blogTitle, blogAuthor) => {
+    if (window.confirm(`Remove blog ${blogTitle} by ${blogAuthor}?`)) {
+      await blogService.remove(blogId)
+      updateBlogs()
+      showNotification(
+        `Blog ${blogTitle} deleted successfully`,
+        'success',
+      )
+    }
+  }
+
 
   return (
     <div>
@@ -128,7 +149,15 @@ function App() {
 
           <div>
             {/* Display blogs */}
-            {blogs.map((blog) => <Blog key={blog.id} blog={blog}  updateBlogs={updateBlogs} user={user} showNotification = {showNotification}/>)}
+            {blogs.map((blog) => <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlogs={updateBlogs}
+              user={user}
+              showNotification={showNotification}
+              handleLike={handleLike}
+              handleDelete={handleDelete}
+            />)}
           </div>
         </div>
       )}
