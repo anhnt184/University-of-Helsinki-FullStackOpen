@@ -12,6 +12,7 @@ function LoginForm({
       <div>
         username
         <input
+          id='username'
           type="text"
           value={username}
           onChange={handleUsernameChange}
@@ -20,12 +21,13 @@ function LoginForm({
       <div>
         password
         <input
+          id='password'
           type="password"
           value={password}
           onChange={handlePasswordChange}
         />
       </div>
-      <button type="submit">Login</button>
+      <button id="login-button" type="submit">Login</button>
     </form>
   )
 }

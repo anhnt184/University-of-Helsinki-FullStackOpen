@@ -141,7 +141,7 @@ function App() {
             {' '}
             logged in
             {' '}
-            <button type="button" onClick={handleLogout}>Logout</button>
+            <button id="logout" type="button" onClick={handleLogout}>Logout</button>
           </p>
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />

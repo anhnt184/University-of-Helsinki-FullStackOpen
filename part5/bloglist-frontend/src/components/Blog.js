@@ -46,25 +46,26 @@ const Blog = ({ blog, user, showNotification, handleLike, handleDelete  }) => {
     <div className="blog" style={blogStyle}>
       <div>
         {blog.title} {blog.author}
-        <button onClick={toggleDetails}>
+        <button id = "hide-view" onClick={toggleDetails}>
           {showDetails ? 'hide' : 'view'}
         </button>
       </div>
       {showDetails && (
         <div>
-          {blog.url}
+          <span>{blog.url}</span>
           <br />
-          likes {blog.likes}
-          <button onClick={handleLikeClick}>like</button>
+          <span>likes {blog.likes}
+            <button id="like" onClick={handleLikeClick}>like</button>
+          </span>
           <br />
-          {blog.author}
+          <span>{blog.author}</span>
           <br />
-          {blog.user.name}
+          <span>{blog.user.name}</span>
           <br />
           {blog.user.username === user.username && (
-            <div style={deleteWrapperStyle}>
-              <button style={deleteButtonStyle} onClick={handleDeleteClick}>delete</button>
-            </div>
+            <span><div style={deleteWrapperStyle}>
+              <button id="delete" style={deleteButtonStyle} onClick={handleDeleteClick}>delete</button>
+            </div></span>
           )}
         </div>
       )}
