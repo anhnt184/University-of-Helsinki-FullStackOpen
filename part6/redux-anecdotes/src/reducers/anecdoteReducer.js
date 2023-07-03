@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import anecdoteService from '../services/anecdotes'
 
 // const anecdotesAtStart = [
 //   'If it hurts, do it more often',
@@ -25,25 +26,41 @@ const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
   reducers: {
-    addAnecdote(state, action) {
+    // addAnecdote(state, action) {
       
-      state.push(action.payload)
-    },
+    //   state.push(action.payload)
+    // },
     voteAnecdote(state, action) {
       const id = action.payload;
       const anecdoteToVote = state.find((anecdote) => anecdote.id === id);
       anecdoteToVote.votes += 1;
     },
-    appendNote(state, action) {
+    appendAnecdote(state, action) {
       state.push(action.payload)
     },
-    setNotes(state, action) {
+    setAnecdotes(state, action) {
       return action.payload
     }
     
   },
 })
 
-export const { voteAnecdote, addAnecdote, appendNote, setNotes } = anecdoteSlice.actions
+export const { voteAnecdote, appendAnecdote, setAnecdotes } = anecdoteSlice.actions
+
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const addAnecdote = content => {
+  return async dispatch => {
+    const newAnd = await anecdoteService.createNew(content)
+    dispatch(appendAnecdote(newAnd))
+  }
+}
+
+
 export default anecdoteSlice.reducer
 
