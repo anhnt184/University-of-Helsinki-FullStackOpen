@@ -1,13 +1,13 @@
-import React from 'react';
-import { useNotificationState } from '../reducers/NotificationContext';
+import React from "react";
+import { useNotificationState } from "../reducers/NotificationContext";
 
 const Notification = () => {
   const { notification } = useNotificationState();
   const style = {
-    border: 'solid',
+    border: "solid",
     padding: 10,
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   };
 
   if (!notification) {
