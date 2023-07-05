@@ -11,5 +11,3 @@ export const getAnecdotes = () =>
   export const updateAnecdote = updatedAnecdote =>
   axios.put(`${baseUrl}/${updatedAnecdote.id}`, updatedAnecdote).then(res => res.data)
 
-  export const updateNote = updatedNote =>
-  axios.put(`${baseUrl}/${updatedNote.id}`, updatedNote).then(res => res.data)

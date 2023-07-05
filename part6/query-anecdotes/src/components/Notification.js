@@ -1,16 +1,20 @@
-const Notification = ({ message }) => {
+import React from 'react';
+import { useNotificationState } from '../reducers/NotificationContext';
+
+const Notification = () => {
+  const { notification } = useNotificationState();
   const style = {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
     marginBottom: 5
+  };
+
+  if (!notification) {
+    return null;
   }
 
-  if (!message) {
-    return null
-  }
+  return <div style={style}>{notification}</div>;
+};
 
-  return <div style={style}>{message}</div>;
-}
-
-export default Notification
+export default Notification;

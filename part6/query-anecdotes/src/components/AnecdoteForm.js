@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react';
+import { useNotificationDispatch } from '../reducers/NotificationContext';
 
-const AnecdoteForm = ({ createAnecdote, showNotification }) => {
+
+const AnecdoteForm = ({ createAnecdote }) => {
   const [content, setContent] = useState('')
-const onCreate = (event) => {
+  const { showNotification } = useNotificationDispatch()
+
+  const onCreate = (event) => {
   event.preventDefault()
   if (content.length >= 5) {
     createAnecdote(content)
     setContent('')
     event.target.anecdote.value = ''
   } else {
-    showNotification('The anecdote must be at least 5 characters long')
+    showNotification('too short anectdote, must have length 5 or more')
+    
   }
   
 }
