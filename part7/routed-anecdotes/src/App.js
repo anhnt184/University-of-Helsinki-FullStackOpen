@@ -58,6 +58,10 @@ const AnecdoteList = ({ anecdotes }) => {
 const Anecdote = ({ anecdotes }) => {
   const id = useParams().id
   const anecdote = anecdotes.find(n => n.id === Number(id)) 
+  if (!anecdote) {
+    return <div>No anecdote found with id: {id} </div>
+  }
+
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
@@ -119,15 +123,15 @@ const CreateNew = ({ addNew }) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input value={content.value} type={content.type} onChange={content.onChange}/>
         </div>
         <div>
           author
-          <input {...author} />
+          <input value={author.value} type={author.type} onChange={author.onChange}/>
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input value={info.value} type={info.type} onChange={info.onChange}/>
         </div>
         <button>create</button>
         <button type="button" onClick={handleReset}>
