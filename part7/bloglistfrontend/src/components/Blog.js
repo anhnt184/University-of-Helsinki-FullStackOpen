@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/bloglistReducer'
 import blogService from '../services/blogs'
+import { Link } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 import { setNotificationWithTimeout } from '../reducers/notificationReducer'
 
@@ -50,29 +52,16 @@ const Blog = () => {
     borderWidth: 1,
     marginBottom: 5,
   }
-
-  const deleteButtonStyle = {
-    backgroundColor: 'darkgreen',
-    color: 'black',
-    border: 'none',
-    borderRadius: '3px',
-    padding: '3.5px 12px',
-    cursor: 'pointer',
-  }
-
-  const deleteWrapperStyle = {
-    margin: '5px 0',
-  }
-
   return (
     <div>
       {bloglist.map((blog) => (
         <div key={blog.id} className="blog" style={blogStyle}>
-          <div>
+          <div> <Link to={`/blogs/${blog.id}`}>
             {blog.title} {blog.author}
-            <button id="hide-view" onClick={() => toggleDetails(blog.id)}>
-              {showDetails[blog.id] ? 'hide' : 'view'}
-            </button>
+          </Link>
+          <Button id="hide-view" onClick={() => toggleDetails(blog.id)} variant="primary" type="submit">
+            {showDetails[blog.id] ? 'hide' : 'view'}
+          </Button>
           </div>
           {showDetails[blog.id] && (
             <div>
@@ -80,9 +69,9 @@ const Blog = () => {
               <br />
               <span>
                 likes {blog.likes}
-                <button id="like" onClick={() => handleLikeClick(blog)} >
-                  like
-                </button>
+                <Button id="like" onClick={() => handleLikeClick(blog)} variant="primary" type="submit">
+                like
+                </Button>
               </span>
               <br />
               <span>{blog.author}</span>
@@ -91,19 +80,11 @@ const Blog = () => {
               <br />
               {/* Delete button */}
               {blog.user.username === user.username && (
-                <span>
-                  <div style={deleteWrapperStyle}>
-                    <button
-                      id="delete"
-                      style={deleteButtonStyle}
-                      onClick={() =>
-                        handleDeleteClick(blog.id)
-                      }
-                    >
-                      delete
-                    </button>
-                  </div>
-                </span>
+                <Button id="delete"
+                  onClick={() => handleDeleteClick(blog.id)
+                  } variant="primary" type="submit">
+                    delete
+                </Button>
               )}
             </div>
           )}

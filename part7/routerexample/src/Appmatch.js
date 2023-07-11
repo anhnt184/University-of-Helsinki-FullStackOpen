@@ -172,6 +172,7 @@ const App = () => {
           : <Link style={padding} to="/login">login</Link>
         }
       </div>
+      <Router>
       <Routes>
         <Route path="/notes/:id" element={<Note note={note} />} />
         <Route path="/notes" element={<Notes notes={notes} />} />
@@ -179,6 +180,7 @@ const App = () => {
         <Route path="/login" element={<Login onLogin={login} />} />
         <Route path="/" element={<Home />} />
       </Routes>
+      </Router>
       <div>
         <br />
         <em>Note app, Department of Computer Science 2022</em>

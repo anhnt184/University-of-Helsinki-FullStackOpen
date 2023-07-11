@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addBloglist } from '../reducers/bloglistReducer'
 import { setNotificationWithTimeout } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = (props) => {
   const dispatch = useDispatch()
@@ -19,10 +20,10 @@ const BlogForm = (props) => {
   return (
     <>
       <h2>create new</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          <label htmlFor="title">title: </label>
-          <input
+      <Form onSubmit={addBlog}>
+        <Form.Group>
+          <Form.Label>title:</Form.Label>
+          <Form.Control
             type="text"
             id="title"
             value={newBlog.title}
@@ -30,11 +31,8 @@ const BlogForm = (props) => {
             onChange={(event) =>
               setNewBlog({ ...newBlog, title: event.target.value })}
           />
-          <br />
-        </div>
-        <div>
-          <label htmlFor="author">author: </label>
-          <input
+          <Form.Label>author:</Form.Label>
+          <Form.Control
             type="text"
             id="author"
             value={newBlog.author}
@@ -43,11 +41,8 @@ const BlogForm = (props) => {
               setNewBlog({ ...newBlog, author: event.target.value })
             }
           />
-          <br />
-        </div>
-        <div>
-          <label htmlFor="url">URL:</label>
-          <input
+          <Form.Label>URL:</Form.Label>
+          <Form.Control
             type="text"
             id="url"
             value={newBlog.url}
@@ -57,10 +52,12 @@ const BlogForm = (props) => {
             }
           />
           <br />
-        </div>
-        <br />
-        <button id="createblog" type="submit">create new blog</button>
-      </form>
+          <Button id="createblog" variant="primary" type="submit">
+          create new blog
+          </Button>
+        </Form.Group>
+      </Form>
+      <br />
     </>
   )
 }
