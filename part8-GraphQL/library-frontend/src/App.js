@@ -45,6 +45,7 @@ const App = () => {
       </div>
       <Routes>
       <Route path="/authors" element={<Authors setError={notify} />} />
+      <Route path="/" element={<Authors setError={notify} />} />
       <Route path="/books" element={<Books />} />
       <Route path="/add" element={<NewBook setError={notify} />} />
       </Routes>
