@@ -32,7 +32,9 @@ const Authors = ({ setError }) => {
         </tbody>
       </table>
     </div>
-    <BornForm setError={setError}/>
+    {localStorage.getItem('libapp-user-token') && (
+        <BornForm setError={setError} />
+      )}
     </>
   )
 }
