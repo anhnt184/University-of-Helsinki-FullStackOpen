@@ -1,30 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from "../queries"
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS)
-  const [selectedGenre, setSelectedGenre] = useState('all')
+    const [selectedGenre, setSelectedGenre] = useState('all')
 
-  if (result.loading)  {
+    const { loading, data, refetch } = useQuery(ALL_BOOKS)
+
+    useEffect(() => {
+        refetch({ genre: selectedGenre === 'all' ? null : selectedGenre })
+    }, [selectedGenre, refetch])
+
+
+  if (loading)  {
     return <div>loading...</div>
   }
 
-  const books = result.data.allBooks
+  const books = data.allBooks
 
   // Get a unique list of genres from the book data
   const genres = [...new Set(books.flatMap((book) => book.genres))]
 
-  const filteredBooks =
-  selectedGenre === 'all'
-    ? books
-    : books.filter((book) => book.genres.includes(selectedGenre))
-
-    const handleGenreChange = (genre) => {
+  const handleGenreChange = (genre) => {
       setSelectedGenre(genre);
-    }
-
-
+  }
+    const filteredBooks = books
 
   return (
     <div>

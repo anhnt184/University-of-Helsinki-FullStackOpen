@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useMutation } from '@apollo/client'
 
-import { CREATE_BOOK, ALL_BOOKS } from '../queries'
+import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries'
 
 const NewBook = ({ setError }) => {
   const [title, setTitle] = useState('')
@@ -12,13 +12,61 @@ const NewBook = ({ setError }) => {
   const [genres, setGenres] = useState([])
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
-    refetchQueries: [ { query: ALL_BOOKS } ],
+    // refetchQueries: [ { query: ALL_BOOKS } ],
     onError: (error) => {
       // const errors = error.graphQLErrors[0].extensions.error.errors
       // const messages = Object.values(errors).map(e => e.message).join('\n')
-      const messages = error.graphQLErrors[0].message
-      setError(messages)
+      // const messages = error.graphQLErrors[0].message
+
+      // console.log('Error', error)
+      let errorMessage = 'An error occurred';
+    if (
+      error.graphQLErrors &&
+      error.graphQLErrors.length > 0 &&
+      error.graphQLErrors[0].extensions.error.errors
+    ) {
+      const errors = error.graphQLErrors[0].extensions.error.errors;
+      errorMessage = Object.values(errors)
+        .map((e) => e.message)
+        .join('\n');
+    } 
+      setError(errorMessage)  
+    },
+    update: (cache, response) => {
+      const allBooksData = cache.readQuery({ query: ALL_BOOKS })
+      // console.log('allBooksData: ', allBooksData)
+      // Update cache for books
+      if (allBooksData) {
+      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(response.data.addBook),
+        }
+      })
     }
+
+    const allAuthorsData = cache.readQuery({ query: ALL_AUTHORS })
+      // Update cache for authors
+      const authorName = response.data.addBook.author.name
+      // console.log('authorName: ', authorName)
+      if (allAuthorsData) {
+      cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        // If the author is already in the cache, update their bookCount
+        if (allAuthors.some((author) => author.name === authorName)) {
+          return {
+            allAuthors: allAuthors.map((author) =>
+              author.name === authorName
+                ? { ...author, bookCount: author.bookCount + 1, born: null}
+                : author
+            ),
+          }
+        }
+        // If the author is not in the cache, add them with bookCount = 1
+        return {
+          allAuthors: [...allAuthors, { name: authorName, bookCount: 1 }],
+        }
+      })
+    }
+    },
   })
 
   const submit = async (event) => {

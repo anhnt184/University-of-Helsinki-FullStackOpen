@@ -3,6 +3,7 @@ import App from './App'
 
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
+import {BrowserRouter as Router} from 'react-router-dom'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('libapp-user-token')
@@ -24,7 +25,9 @@ const client = new ApolloClient({
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
+  <Router>
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>
+  </Router>
 )

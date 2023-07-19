@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import {useNavigate} from 'react-router-dom'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -7,10 +8,7 @@ import Logout from './components/Logout'
 import Recommendations from './components/Recommendations'
 
 
-import {
-  BrowserRouter as Router,
-  Routes, Route, Link, useNavigate
-} from 'react-router-dom'
+import {Routes, Route, Link} from 'react-router-dom'
 
 
 const Notify = ({errorMessage}) => {
@@ -27,6 +25,17 @@ const Notify = ({errorMessage}) => {
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const token = localStorage.getItem('libapp-user-token')
+    if (token) {
+      setToken(token)
+      navigate('/authors')
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setToken])
+
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -40,8 +49,7 @@ const App = () => {
   }
 
   return (
-    <Router>
-    <div>
+     <div>
       <Notify errorMessage={errorMessage} />
       <div>
       <Link style={padding} to="/authors"><button>authors</button></Link>
@@ -82,8 +90,7 @@ const App = () => {
       )}        
       </Routes>
     </div>
-    </Router>
-  )
+   )
 }
 
 export default App
