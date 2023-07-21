@@ -7,6 +7,9 @@ import LoginForm from './components/LoginForm'
 import Logout from './components/Logout'
 import Recommendations from './components/Recommendations'
 
+import { useSubscription, useApolloClient } from '@apollo/client'
+import { ALL_BOOKS, BOOK_ADDED } from './queries'
+
 
 import {Routes, Route, Link} from 'react-router-dom'
 
@@ -22,6 +25,50 @@ const Notify = ({errorMessage}) => {
   )
 }
 
+// function that takes care of manipulating cache
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByName = (a) => {
+    const seen = new Set();
+    const uniqueItems = [];
+
+    for (const item of a) {
+      const k = item.name;
+      if (!seen.has(k)) {
+        seen.add(k);
+        uniqueItems.push(item);
+      }
+    }
+
+    return uniqueItems;
+  };
+
+   // Check if addedBook is valid
+  if (!addedBook || !addedBook.id) {
+    return;
+  }
+
+  // Read the existing allBooks data from the cache
+  const existingData = cache.readQuery(query)
+  if (existingData && existingData.allBooks) {
+  cache.updateQuery(query, ({ allBooks }) => {
+    // console.log('allBooks> ', allBooks);
+
+    // Handle the case where allBooks is null
+    if (allBooks === null) {
+      return {
+        allBooks: [addedBook],
+      };
+    }
+
+    return {
+      data: {
+        allBooks: uniqByName(allBooks.concat(addedBook)),
+      },
+    };
+  });
+}
+}
+
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
@@ -35,6 +82,20 @@ const App = () => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setToken])
+
+  const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data}) => {
+      const addedBook = data.data.bookAdded
+      // console.log('addedBook: ', addedBook)
+     if (data.data.bookAdded) {
+      const { title } = data.data.bookAdded
+      window.alert(`New book added: ${title}`);
+    }
+    updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+    }
+  })
 
 
   const notify = (message) => {
